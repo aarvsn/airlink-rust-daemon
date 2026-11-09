@@ -14,14 +14,13 @@ Each physical or virtual machine that hosts game servers runs one daemon instanc
 
 ## Prerequisites
 
-- Node.js v18 or later
-- npm v9 or later
+- Rust 1.80+ (or Cargo)
 - Git
 - Docker (running and accessible to the daemon process)
 
 ---
 
-## Installation
+## Installation & Running (Rust)
 
 ### Step 1 — Clone the repository
 
@@ -31,60 +30,26 @@ git clone https://github.com/AirlinkLabs/daemon.git
 cd daemon
 ```
 
-### Step 2 — Set permissions
-
-```bash
-sudo chown -R www-data:www-data /etc/daemon
-sudo chmod -R 755 /etc/daemon
-```
-
-### Step 3 — Install dependencies
-
-```bash
-npm install
-```
-
-### Step 4 — Configure environment
+### Step 2 — Configure environment
 
 ```bash
 cp example.env .env
 ```
 
-Edit `.env` and set at minimum:
-
-| Variable | Description |
-|----------|-------------|
-| `PORT` | Port the daemon listens on (default: `3001`) |
-| `KEY` | Shared secret — must match the key you enter in the panel when creating the node |
-| `SFTP_PORT` | Port for the built-in SFTP server (default: `3003`) |
-| `REQUIRE_HMAC` | Set to `true` to enforce HMAC request signing (see Security below) |
-
-### Step 5 — Build
-
+Or configure automatically with the panel:
 ```bash
-npm run build
+cargo run --bin configure -- --panel http://<panel-ip>:<panel-port> --key <key>
 ```
 
-### Step 6 — Register with the panel
-
-1. Log into your Airlink Panel as an admin
-2. Go to **Admin → Nodes → Create**
-3. Enter the daemon's address, port, and the `KEY` value from your `.env`
-4. Copy the generated configuration snippet and paste it into your `.env` if prompted
-
-### Step 7 — Start
+### Step 3 — Build & Run
 
 ```bash
-npm run start
-```
+# Debug run
+cargo run --bin airlinkd
 
-### Running with pm2
-
-```bash
-npm install -g pm2
-pm2 start dist/app/app.js --name airlink-daemon
-pm2 save
-pm2 startup
+# Release build
+cargo build --release
+./target/release/airlinkd
 ```
 
 ---
