@@ -159,3 +159,6 @@ bun.lock
 *.backup
 *.tmp
 *.temp
+target/
+/target/
+Cargo.lock
